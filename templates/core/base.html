@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> {% block title %}Multi Vendor E-Commerce Website{% endblock title %} </title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
 </head>
 <body>
 
