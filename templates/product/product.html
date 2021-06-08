@@ -1,0 +1,35 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{product.title}}{% endblock title %}
+
+{% block content %}
+
+    {% if product.image %}
+        <figure class="image is-4by3 mb-6">
+            <img src="{{product.image.url}}" alt="{{product.title}}">
+        </figure>
+    {% endif %}
+
+    <h1 class="title">{{product.title}}, ${{product.price}}</h1>
+
+    <p class="mb-6">
+        <span class="tag is-dark">{{ product.vendor.name }}</span>
+    </p>
+
+    <p>{{product.description}}</p>
+
+    {% if similar_products %}
+        <hr>
+
+        <div class="columns is-multiline">
+            <div class="column is-12">
+                <h2 class="subtitle">Similar Products</h2>
+            </div>
+
+            {% for product in similar_products %}
+                {% include 'product/parts/list_item.html' %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+{% endblock content %}

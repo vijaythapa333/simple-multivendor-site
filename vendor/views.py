@@ -4,6 +4,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 
 from .models import Vendor
+from product.models import Product
+from .forms import ProductForm
+
+# Converting Title into Slug
+from django.utils.text import slugify
 
 # Create your views here.
 
@@ -31,4 +36,24 @@ def become_vendor(request):
 @login_required
 def vendor_admin(request):
     vendor = request.user.vendor
-    return render(request, 'vendor/vendor_admin.html', {'vendor': vendor})
+    products = Product.objects.filter(vendor=vendor)
+    return render(request, 'vendor/vendor_admin.html', {'vendor': vendor, 'products': products})
+
+@login_required
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            product = form.save(commit=False) # Because we have not given vendor yet
+            product.vendor = request.user.vendor
+            product.slug = slugify(product.title)
+            product.save() #finally save
+
+            return redirect('vendor:vendor-admin')
+
+    else:
+        form = ProductForm
+
+    return render(request, 'vendor/add_product.html', {'form': form})
+

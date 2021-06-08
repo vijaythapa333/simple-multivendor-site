@@ -6,5 +6,39 @@
 
     <h1 class="title">Vendor Admin - <span class="is-capitalized">{{vendor.name}}</span></h1>
 
+    <div class="box">
+    
+        <h2 class="is-size-3 mb-4">My Products</h2>
+
+        <a href="{% url 'vendor:add-product' %}" class="button is-dark is-uppercase mb-6">Add Product</a>
+
+        {% if products %}
+        
+            <table class="table is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>S.N.</th>
+                        <th>Title</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href="{% url 'product:product' product.category.slug product.slug %}">{{ product.title }}</a></td>
+                            <td>${{ product.price }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        {% else %}
+            <p class="has-text-danger">Products not added yet.</p>
+        {% endif %}
+    
+    </div>
 
 {% endblock content %}

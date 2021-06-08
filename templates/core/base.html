@@ -33,10 +33,12 @@
                 <a class="navbar-item" href="{% url 'core:home' %}">
                     Home
                 </a>
-
-                <a class="navbar-item">
-                    Documentation
-                </a>
+                
+                {% for category in categories %}
+                    <a class="navbar-item" href="{% url 'product:category' category.slug %}">
+                        {{category.title}}
+                    </a>
+                {% endfor %}
 
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link">
@@ -60,10 +62,21 @@
                     </div>
                 </div>
 
-                <a class="navbar-item" href="{% url 'core:contact' %}">
-                    Contact
-                </a>
+                </div>
 
+                <div class="navbar-start">
+                    <div class="navbar-item">
+                        <form method="get" action="{% url 'product:search' %}">
+                            <div class="field has-addons">
+                                <div class="control">
+                                    <input type="search" name="query" id="" class="input" placeholder="Search...">
+                                </div>
+                                <div class="control">
+                                    <button class="button is-dark is-uppercase">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
                 <div class="navbar-end">
@@ -81,8 +94,8 @@
                     <a class="navbar-item" href="{% url 'vendor:vendor-admin' %}">
                         Vendor Admin
                     </a>
-                    <a class="navbar-item">
-                        Jobs
+                    <a class="navbar-item" href="{% url 'vendor:add-product' %}">
+                        Add Product
                     </a>
                     <a class="navbar-item">
                         Contact

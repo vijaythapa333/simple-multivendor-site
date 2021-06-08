@@ -1,14 +1,14 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Home Page{% endblock title %}
+{% block title %}Search for {{query}}{% endblock title %}
 
 {% block content %}
     <div class="columns is-multiline mb-6">
         <div class="column is-12 has-test-centered mt-6 mb-6">
-            <h2 class="is-size-3">Latest Products</h2>
+            <h2 class="is-size-3"> Search for "{{query}}"</h2>
         </div>
 
-        {% for product in newest_products %}
+        {% for product in products %}
             {% include 'product/parts/list_item.html' %}
         {% endfor %}
     </div>
