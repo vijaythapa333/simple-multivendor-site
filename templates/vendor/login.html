@@ -1,0 +1,20 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Vendor Login{% endblock title %}
+
+{% block content %}
+
+    <h1 class="title">Vendor Login</h1>
+
+    <form method="post" action="">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <div class="field">
+            <div class="control">
+                <button class="button is-dark is-uppercase">Log In</button>
+            </div>
+        </div>
+    </form>
+{% endblock content %}

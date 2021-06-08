@@ -67,16 +67,49 @@
                 </div>
 
                 <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
-                    <a class="button is-primary">
-                        <strong>Sign up</strong>
+
+                
+                
+                {% if request.user.is_authenticated %}
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link is-capitalized">
+                    {{user.vendor.name}}
                     </a>
-                    <a class="button is-light">
-                        Log in
+
+                    <div class="navbar-dropdown">
+                    <a class="navbar-item" href="{% url 'vendor:vendor-admin' %}">
+                        Vendor Admin
+                    </a>
+                    <a class="navbar-item">
+                        Jobs
+                    </a>
+                    <a class="navbar-item">
+                        Contact
+                    </a>
+                    <hr class="navbar-divider">
+                    <a class="navbar-item" href="{% url 'vendor:logout' %}">
+                        Logout
                     </a>
                     </div>
                 </div>
+
+                {% else %}
+
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button is-primary" href="{% url 'vendor:become-vendor' %}">
+                            <strong>Become Vendor</strong>
+                        </a>
+                        <a class="button is-light" href="{% url 'vendor:login' %}">
+                            Log in
+                        </a>
+                    </div>
+                </div>
+
+                {% endif %}
+
+
                 </div>
             </div>
             </nav>
@@ -94,8 +127,13 @@
     <footer class="footer">
         <div class="container">
             <h3 class="is-size-4 mb-4">Multi Vendor E-Commerce</h3>
+            
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'vendor:vendor-admin' %}">Vendor Admin</a>
+            {% else %}
+                <a href="{% url 'vendor:become-vendor' %}">Become a Vendor</a>
+            {% endif %}
 
-            <a href="#">Become a Vendor</a>
         </div>
     </footer>
 
