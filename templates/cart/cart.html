@@ -65,7 +65,26 @@
 
         <h2 class="subtitle">Contact Information</h2>
 
+        <form method="post" action="" id="payment-form">
             {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="notification is-danger">
+                    {{form.non_field_errors}}
+                </div>
+            {% endif %}
+
+            {% if form.errors %}
+                <div class="notification is-danger">
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li><strong>{{field.label}}</strong>{{error}}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
 
             <div class="columns">
                 <div class="column is-6">
@@ -135,11 +154,24 @@
 
             <h2 class="subtitle">Payment Information</h2>
 
+            <div id="card-element">
+                {% comment %} A stripe Element will be inserted here {% endcomment %}
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="notification is-danger">
+                        {{message}}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
             <div class="field">
                 <div class="control">
                     <button class="button is-dark mt-4 is-uppercase">Checkout</button>
                 </div>
             </div>
+        </form>
     {% else %}
 
     <p>You don't have any products in your cart.</p>
@@ -147,3 +179,43 @@
     {% endif %}
 
 {% endblock content %}
+
+
+{% block scripts %}
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        var stripe = Stripe('{{ stripe_pub_key }}');
+        var elements = stripe.elements();
+
+        var card = elements.create('card');
+
+        card.mount('#card-element');
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    stripeTokenHandler(result.token);
+                }
+            });
+        });
+
+        function stripeTokenHandler(token) {
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripe_token');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+
+            form.submit();
+        }
+    </script>
+
+{% endblock scripts %}
