@@ -1,0 +1,149 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Cart{% endblock title %}
+
+{% block content %}
+
+    <h1 class="title">Cart</h1>
+
+    {% if cart %}
+    
+        <div class="box mb-6">
+            <div class="table">
+                <table class="table is-fullwidth is-striped">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in cart %}
+                        
+                            <tr>
+                                <td>
+                                    <figure class="image is-64x64">
+                                        <img src="{{ item.product.get_thumbnail }}" alt="{{item.product.title}}">
+                                    </figure>
+                                </td>
+                                <td>
+                                    <a href="{% url 'product:product' item.product.category.slug item.product.slug %}">{{item.product.title}}</a>
+                                </td>
+                                <td>
+                                    ${{item.quantity}}
+
+                                    <a href="?change_quantity={{ item.id }}&quantity=-1">-</a>
+                                    <a href="?change_quantity={{ item.id }}&quantity=1">+</a>
+
+                                </td>
+
+                                <td>${{ item.total_price }}</td>
+                                <td>
+                                    <a href="?remove_from_cart={{item.id}}" class="delete">Remove</a>
+                                </td>
+                            </tr>
+                        
+                        {% endfor %}
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td><strong>Total Cost</strong> </td>
+                            <td><strong>{{ cart|length }}</strong> </td>
+                            <td colspan="2">${{cart.get_total_cost}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+
+        <h2 class="subtitle">Contact Information</h2>
+
+            {% csrf_token %}
+
+            <div class="columns">
+                <div class="column is-6">
+                    <div class="field">
+                        <label>First Name</label>
+
+                        <div class="control">
+                            <input type="text" name="first_name" id="" class="input">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Last Name</label>
+
+                        <div class="control">
+                            <input type="text" name="last_name" id="" class="input">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Email</label>
+
+                        <div class="control">
+                            <input type="email" name="email" id="" class="input">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Phone</label>
+
+                        <div class="control">
+                            <input type="text" name="phone" id="" class="input">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="column is-6">
+                    <div class="field">
+                        <label>Address</label>
+
+                        <div class="control">
+                            <input type="text" name="address" id="" class="input">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Zip Code</label>
+
+                        <div class="control">
+                            <input type="text" name="zipcode" id="" class="input">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Place</label>
+
+                        <div class="control">
+                            <input type="text" name="place" id="" class="input">
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <h2 class="subtitle">Payment Information</h2>
+
+            <div class="field">
+                <div class="control">
+                    <button class="button is-dark mt-4 is-uppercase">Checkout</button>
+                </div>
+            </div>
+    {% else %}
+
+    <p>You don't have any products in your cart.</p>
+
+    {% endif %}
+
+{% endblock content %}

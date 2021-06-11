@@ -81,7 +81,9 @@
 
                 <div class="navbar-end">
 
-                
+                <div class="navbar-item">
+                    <a href="{% url 'cart:cart' %}" class="button is-warning">Cart {% if cart %}({{cart|length}}){% endif %}</a>
+                </div>
                 
                 {% if request.user.is_authenticated %}
 
