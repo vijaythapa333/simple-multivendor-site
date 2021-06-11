@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'core',
     'vendor',
     'product',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +127,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'vendor:login'
 LOGIN_REDIRECT_URL = 'vendor:vendor-admin'
 LOGOUT_REDIRECT_URL = 'core:home'
+
+SESSION_COOKIE_AGE = 86400 # Day in Seconds
+CART_SESSION_ID = 'cart'
+

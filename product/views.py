@@ -1,14 +1,36 @@
 import random # To get random products from the database
-
-from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+from django.shortcuts import redirect, render, get_object_or_404
 
 from .models import Category, Product
 
 from django.db.models import Q
 
+from .forms import AddToCartForm
+from cart.cart import Cart
+
+
 # Create your views here.
 def product(request, category_slug, product_slug):
+    # Create instance of Cart class
+    cart = Cart(request)
+
     product = get_object_or_404(Product, category__slug=category_slug, slug=product_slug)
+
+    # Check whether the AddToCart button is clicked or not
+    if request.method == 'POST':
+        form = AddToCartForm(request.POST)
+
+        if form.is_valid():
+            quantity = form.cleaned_data['quantity']
+            cart.add(product_id=product.id, quantity=quantity, update_quantity=False)
+
+            messages.success(request, "The product was added to the cart.")
+
+            return redirect('product:product', category_slug=category_slug, product_slug=product_slug)            
+    
+    else:
+        form = AddToCartForm()
 
     similar_products = list(product.category.products.exclude(id=product.id))
 
@@ -18,7 +40,8 @@ def product(request, category_slug, product_slug):
     
     context = {
         'product': product,
-        'similar_products': similar_products
+        'similar_products': similar_products,
+        'form': form,
     }
 
     return render(request, 'product/product.html', context)
