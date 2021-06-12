@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from .cart import Cart
 from .forms import CheckoutForm
 
-from order.utilities import checkout
+from order.utilities import checkout, notify_vendor, notify_customer
 
 # Create your views here.
 def cart_detail(request):
@@ -20,26 +20,35 @@ def cart_detail(request):
 
             stripe_token = form.cleaned_data['stripe_token']
 
-            charge = stripe.Charge.create(
-                amount=int(cart.get_total_cost() * 100), # Amount in Cents
-                currency='USD',
-                description='Charge From Multivendor Shop',
-                source=stripe_token
-            )
+            try:
+                charge = stripe.Charge.create(
+                    amount=int(cart.get_total_cost() * 100), # Amount in Cents
+                    currency='USD',
+                    description='Charge From Multivendor Shop',
+                    source=stripe_token
+                )
 
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            email = form.cleaned_data['email']
-            phone = form.cleaned_data['phone']
-            address = form.cleaned_data['address']
-            zipcode = form.cleaned_data['zipcode']
-            place = form.cleaned_data['place']
+                first_name = form.cleaned_data['first_name']
+                last_name = form.cleaned_data['last_name']
+                email = form.cleaned_data['email']
+                phone = form.cleaned_data['phone']
+                address = form.cleaned_data['address']
+                zipcode = form.cleaned_data['zipcode']
+                place = form.cleaned_data['place']
 
-            order = checkout(request, first_name, last_name, email, phone, address, zipcode, place, cart.get_total_cost())
+                order = checkout(request, first_name, last_name, email, phone, address, zipcode, place, cart.get_total_cost())
 
-            cart.clear()
+                cart.clear()
 
-            return redirect('cart:success')
+                # SEnd Email Notification
+                notify_customer(order)
+                notify_vendor(order)
+
+                return redirect('cart:success')
+            
+            except Exception:
+                messages.error(request, "Something went wrong with payment.")
+            
     else:
         form = CheckoutForm()
 
