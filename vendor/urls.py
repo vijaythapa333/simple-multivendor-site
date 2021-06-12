@@ -10,6 +10,7 @@ urlpatterns = [
     path('', views.vendors, name="vendors"),
     path('become-vendor/', views.become_vendor, name="become-vendor"),
     path('vendor-admin/', views.vendor_admin, name="vendor-admin"),
+    path('edit-vendor/', views.edit_vendor, name="edit-vendor"),
 
     path('add-product/', views.add_product, name="add-product"),
 
