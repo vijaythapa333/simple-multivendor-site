@@ -1,0 +1,15 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{vendor.name}}{% endblock title %}
+
+{% block content %}
+    <div class="columns is-multiline mb-6">
+        <div class="column is-12 has-test-centered mt-6 mb-6">
+            <h2 class="is-size-3">{{vendor.name}}</h2>
+        </div>
+
+        {% for product in vendor.products.all %}
+            {% include 'product/parts/list_item.html' %}
+        {% endfor %}
+    </div>
+{% endblock content %}
