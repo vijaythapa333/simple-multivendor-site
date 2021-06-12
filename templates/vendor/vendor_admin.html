@@ -6,6 +6,11 @@
 
     <h1 class="title">Vendor Admin - <span class="is-capitalized">{{vendor.name}}</span></h1>
 
+    <div class="mb-5">
+        <strong>My Balance: </strong> ${{vendor.get_balance}} <br>
+        <strong>My Paid Amount: </strong> ${{vendor.get_paid_amount}} 
+    </div>
+
     <div class="box">
     
         <h2 class="is-size-3 mb-4">My Products</h2>
@@ -39,6 +44,57 @@
             <p class="has-text-danger">Products not added yet.</p>
         {% endif %}
     
+    </div>
+
+    <div class="box">
+        <h2 class="is-size-3 mb-4">My Orders</h2>
+
+        {% if orders %}
+            {% for order in orders %}
+                <div class="{% if order.fully_paid %}has-background-success-light{% else %}has-background-info-light{% endif %} mb-2 p-4">
+                    <div class="columns is-multiline">
+                        <div class="column is-6">
+                            <h3 class="is-size-4">#{{ order.id }} - {{ order.first_name }} {{ order.last_name }}</h3>
+                        </div>
+    
+                        <div class="column is-12">
+                            <b>Name:</b> {{ order.first_name }} {{ order.last_name }}<br>
+                            <b>Address:</b> {{ order.address }}<br>
+                            <b>Zip and place:</b> {{ order.zipcode }} {{ order.place }}<br>
+                            <b>E-mail:</b> {{ order.email }}<br>
+                            <b>Phone:</b> {{ order.phone }}
+    
+                            <table class="table is-fullwidth mt-4">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Paid</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+    
+                                <tbody>
+                                    {% for item in order.items.all %}
+                                        {% if item.vendor == request.user.vendor %}
+                                            <tr>
+                                                <td>{{ item.product.title }}</td>
+                                                <td>${{ item.product.price }}</td>
+                                                <td>{{ item.quantity }}</td>
+                                                <td>{{ item.vendor_paid|yesno:"Yes,No" }}</td>
+                                                <td>${{ item.get_total_price }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
     </div>
 
 {% endblock content %}

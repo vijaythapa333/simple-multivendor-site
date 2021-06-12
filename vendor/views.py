@@ -36,8 +36,23 @@ def become_vendor(request):
 @login_required
 def vendor_admin(request):
     vendor = request.user.vendor
-    products = Product.objects.filter(vendor=vendor)
-    return render(request, 'vendor/vendor_admin.html', {'vendor': vendor, 'products': products})
+    products = vendor.products.all()
+    orders = vendor.orders.all()
+    for order in orders:
+        order.vendor_amount = 0
+        order.vendor_paid_amount = 0
+        order.fully_paid = True
+
+        for item in order.items.all():
+            if item.vendor == request.user.vendor:
+                if item.vendor_paid:
+                    order.vendor_paid_amount += item.get_total_price()
+                else:
+                    order.vendor_amount += item.get_total_price()
+                    order.fully_paid = False
+
+
+    return render(request, 'vendor/vendor_admin.html', {'vendor': vendor, 'products': products, 'orders': orders})
 
 @login_required
 def add_product(request):
@@ -56,4 +71,7 @@ def add_product(request):
         form = ProductForm
 
     return render(request, 'vendor/add_product.html', {'form': form})
+
+
+
 
