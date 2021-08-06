@@ -7,7 +7,6 @@ And Users can visit the product and order by paying with Debit/Credit Card (Stri
 
 Then Vendor gets the email notification about the order and should deliver the product to the customer based on the address details.
 
-[Project Demo on YouTube](LINK "Django Simple E-Commerce Website")
 
 
 And if you like this project then ADD a STAR ⭐️  to this project 👆
