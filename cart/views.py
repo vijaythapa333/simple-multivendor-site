@@ -21,11 +21,20 @@ def cart_detail(request):
             stripe_token = form.cleaned_data['stripe_token']
 
             try:
-                charge = stripe.Charge.create(
+                # Create a PaymentIntent (replaces deprecated stripe.Charge.create)
+                payment_intent = stripe.PaymentIntent.create(
                     amount=int(cart.get_total_cost() * 100), # Amount in Cents
                     currency='USD',
                     description='Charge From Multivendor Shop',
-                    source=stripe_token
+                    payment_method_data={
+                        'type': 'card',
+                        'card': {'token': stripe_token},
+                    },
+                    confirm=True,
+                    automatic_payment_methods={
+                        'enabled': True,
+                        'allow_redirects': 'never',
+                    },
                 )
 
                 first_name = form.cleaned_data['first_name']
